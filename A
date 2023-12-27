@@ -1,0 +1,17 @@
+3.
+set lan [$ns newLan "$n3 $n4 $n5 $n6" 0.5Mb 40ms LL Queue/Droptail MAC/802_3 channel]
+
+$ns at 1.0 "$ftp0 start"
+$ns at 22.0 "$ftp0 stop"
+
+$ns at 5.0 "$cbr1 start"
+$ns at 30.0 "$cbr1 stop"
+
+5.
+30
+$ns at 10.0 "$n0 setdest 350 248 50"
+$ns color 0 red
+
+6.
+$ns at 5.0 "$ftp0 stop"
+
