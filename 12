@@ -30,3 +30,33 @@
  printf("\nacknowledge of above frame sent is received by sender\n");
  return 0;
  }
+
+#include<stdio.h>
+int main()
+{
+    int i,f,fr[50];
+    printf("\n Enter no. of frames\n");
+    scanf("%d",&f);
+    printf("\n enter frame\n");
+    for(i=1;i<=f;i++)
+    scanf("%d",&fr[i]);
+    for(i=1;i<=f;i++)
+    {
+        if((random()%2) ==1)
+        {
+            printf("\n%d\n",fr[i]);
+            printf("ack of abv frame sent is recvd\n\n");
+        }
+        else{
+            sleep(3);
+            printf("\n NEGATIVE ACK RESEND %d FRAME\n",fr[i]);
+            i=i+1;
+            sleep(1);
+        }
+    }
+    return 0;
+}
+
+output:
+f : 6
+frames : 145789
