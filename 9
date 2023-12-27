@@ -1,93 +1,113 @@
-#include<stdio.h>
- #include<string.h>
- #define max 1000 
- void main()
+#include<stdio.h> 
+ #define nul 1000
+ #define nodes 10
+ int no;
+ struct node
  {
- char src[max],dst[max],newdst[max]; 
- char flagbyte[]="01111110"; 
- int si=0,di=0,ni=0,ndi=0,count=0,newcount=0;
- printf("enter the data\n");
- scanf("%s",src);
- strcpy(dst,flagbyte);
- di=strlen(flagbyte);
- //-----stuffing of data------
-while(src[si]!='\n') 
+ int a[nodes][3]; 
+ }
+ router[nodes];
+ void init(int r)
  {
- if(src[si]=='1') 
- count++;
+ int i;
+ for(i=1;i<=no;i++)
+ {
+ router[r].a[i][1]=i;
+ router[r].a[i][2]=999;
+ router[r].a[i][3]=nul;
+ }
+ router[r].a[r][2]=0;
+ router[r].a[r][3]=r;
+ }
+ void inp(int r) //define functon inp
+ {
+ int i;
+ printf("\n enter dist to the node %d to other nodes:",r);
+ printf("\n please enter 999 if there is no direct route\n");
+ for(i=1;i<=no;i++)
+ {
+ if(i!=r)
+ {
+ printf("\n enter dist to node %d:",i);
+ scanf("%d",&router[r].a[i][2]);
+ router[r].a[i][3]=i;
+ }
+ }
+ }
+ void display(int r)
+ {
+ int i;
+ printf("\n\n the routing table for node %d to other nodes",r);
+ for(i=1;i<=no;i++)
+ {
+ if(router[r].a[i][2]>=999)
+printf("\n\t\t\t %d \t no link \t no hop",router[r].a[i][1]);
  else
- count=0;
- dst[di++]=src[si++];
- if(count==5) 
+ printf("\n\t\t\t %d \t %d\t\t%d",router[r].a[i][1],router[r].a[i][2],router[r].a[i][3]);
+ }
+ }
+ void dv_algo(int r) 
  {
- dst[di++]='0';
- count=0;
- }
- }
- dst[di]='\0';
- strcat(dst,flagbyte); 
- printf("stuffed data=%s\n",dst);
- //------De-stuffing of data
- ni=strlen(dst);
- di=strlen(flagbyte);
- while(di<(ni-8))
+ int i,j,z;
+ for(i=1;i<=no;i++)
  {
- if(dst[di]=='1')
- newcount++;
- else
- newcount=0;
- newdst[ndi++]=dst[di++];
- if(newcount==5) 
- { di++;
- newcount=0;
- }
-}
- newdst[ndi]='\0';
- printf("de stuff data=%s\n",newdst);
- }
-#include<stdio.h>
- #include<string.h>
- #define max 1000
- void main()
+ if(router[r].a[i][2]!=999 && router[r].a[i][2]!=0)
  {
- char src[max],dst[max],newdst[max];
- char begin[]="DLE_STX",end[]="DLE_ETX";
- int si=0,di=0,ndi=0,ni=0,r=0;
- printf("enter data\n");
- scanf("%s",src);
- strcpy(dst,begin);
- di=strlen(begin);
- //-----stuffing of data------
- while(src[si]!='\0')
+ for(j=1;j<=no;j++)
  {
- if(src[si]=='D' && src[si+1]=='L' && src[si+2]=='E')
+ z=router[r].a[i][2]+router[i].a[j][2];
+ if(router[r].a[j][2]>z)
  {
- dst[di]='D';
- dst[di+1]='L'; 
- dst[di+2]='E';
- dst[di+3]='D';
- dst[di+4]='L';
- dst[di+5]='E';
- di=di+6;
- si=si+3;
- }
- else
- {
- dst[di++]=src[si++];
+ router[r].a[j][2]=z;
+ router[r].a[j][3]=i;
  }
  }
- dst[di]='\0';
- strcat(dst,end);
- printf("\nstuffed data is\n %s",dst);
- ni=strlen(dst);
- di=strlen(begin);
- r=strlen(end);
- while(di<(ni-r))
- {
- newdst[ndi++]=dst[di++];
- if(dst[di]=='D' && dst[di+1]=='L' && dst[di+2]=='E')
- di=di+3;
  }
-newdst[ndi]='\0';
- printf("\ndestuffed data is\n %s",newdst);
+ }
+ }
+ void find(int x,int y) 
+ {
+ if(router[x].a[y][3]!=y)
+ { find(x,router[x].a[y][3]);
+ printf("%d-->",router[x].a[y][3]);
+ find(router[x].a[y][3],y);
+ return;
+ }
+ }
+ int main()
+ {
+ int i,j,x,y;
+ int choice;
+ printf("enter number of nodes req (less than 10pls):");
+ scanf("%d",&no);
+ for(i=1;i<=no;i++)
+ {
+ init(i);
+ inp(i);
+ }
+printf("\n the configuration of nodes after initialisation is as follows:");
+ for(i=i;i<=no;i++)
+ display(i);
+ for(j=1;j<=no;j++)
+ for(i=1;i<=no;i++)
+ dv_algo(i);
+ printf("\n the cofiguartion of nodes after compilation of path is as follows:");
+ for(i=1;i<=no;i++)
+ display(i);
+ while(1)
+ {
+ printf("\n\n enter 1 to continue 0 to quit:");
+ scanf("\%d",&choice);
+ if(choice!=1)
+ break;
+ printf("\nenter nodes bw which shortest path is to be found:\n");
+ scanf("%d%d",&x,&y);
+ printf("\nshortest path is :");
+ printf("%d-->",x);
+ find(x,y);
+ printf("%d",y);
+ printf("\n the length of shortest path is %d",router[x].a[y][2]);
+ }
+ return 
+
  }
