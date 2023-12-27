@@ -1,0 +1,62 @@
+#include <stdio.h>
+int c[50][50],n,d[20];
+void dj(int v, int d[20])
+{
+    int i,j,u,w,s[20],min;
+    for(i=1;i<=n;i++)
+    {
+        s[i]=0;
+        d[i]=c[v][i];
+    }
+    s[v]=1,d[v]=0;
+    for(j=2;j<=n;j++)
+    {
+        min=999;
+        for(i=1;i<=n;i++)
+        {
+            if(!s[i])
+            {
+                if(d[i]<min)
+                {
+                    min=d[i];
+                    u=i;
+                }
+            }
+        }
+        s[u]=1;
+        for(w=1;w<=n;w++)
+        {
+            if(c[u][w]!=999 && s[w]==0)
+            {
+                if(d[w]>d[u]+c[u][w])
+                {
+                    d[w]=d[u]+c[u][w];
+                }
+            }
+        }
+    }
+}
+void main() {
+    // Write C code here
+    int i, j,sr;
+    printf("enter nodes\n");
+    scanf("%d",&n);
+    printf("enter maxtrux\n");
+    for(i=1;i<=n;i++)
+    {
+    for(j=1;j<=n;j++)
+    {
+    scanf("%d",&c[i][j]);
+    if(c[i][j]==0)
+        c[i][j]=999;
+    }
+    }
+    printf("enter src\n");
+    scanf("%d",&sr);
+    dj(sr,d);
+    for(i=1;i<=n;i++)
+    {
+        if(i!=sr)
+        printf("path %d--> %d is %d",sr,i,d[i]);
+    }
+}
